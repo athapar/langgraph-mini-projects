@@ -26,6 +26,7 @@ sequenceDiagram
     participant Answer as answer_node
     participant Critique as critique_node
     participant Decision as should_continue
+    participant End
     
     Start->>Answer: State: {question, answer="", feedback="", score=0, iteration=0}
     Answer->>Answer: LLM generates initial answer
