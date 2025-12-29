@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Agent Flow Diagrams</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 40px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .diagram-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <h1>Two-Agent Flow Diagrams</h1>
+    
+    <div class="diagram-container">
+        <h2>Graph Flow Diagram</h2>
+        <p class="description">Visual representation of the graph structure showing nodes, edges, and conditional routing</p>
+        <div class="mermaid">
+graph TD
+    START([START]) --> answer[answer_node<br/>Generate/Refine Answer]
+    
+    answer --> |Updates: answer, iteration++| critique[critique_node<br/>Evaluate & Score]
+    
+    critique --> |Updates: score, feedback| decision{should_continue<br/>Check: score >= 9?<br/>iteration >= 4?}
+    
+    decision -->|score < 9 AND<br/>iteration < 4| answer
+    decision -->|score >= 9 OR<br/>iteration >= 4| END([END])
+    
+    style START fill:#90EE90
+    style END fill:#FFB6C1
+    style answer fill:#87CEEB
+    style critique fill:#DDA0DD
+    style decision fill:#FFD700
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>State Flow Through Nodes</h2>
+        <p class="description">Sequence diagram showing how state data flows between nodes during execution</p>
+        <div class="mermaid">
+sequenceDiagram
+    participant Start
+    participant Answer as answer_node
+    participant Critique as critique_node
+    participant Decision as should_continue
+    
+    Start->>Answer: State: {question, answer="", feedback="", score=0, iteration=0}
+    Answer->>Answer: LLM generates initial answer
+    Answer->>Critique: State: {question, answer=<new>, iteration=1}
+    Critique->>Critique: LLM evaluates & scores
+    Critique->>Decision: State: {score=<0-10>, feedback=<critique>}
+    
+    alt score >= 9 OR iteration >= 4
+        Decision->>End: Terminate
+    else Continue loop
+        Decision->>Answer: Loop back with feedback
+        Answer->>Answer: LLM refines using feedback
+        Answer->>Critique: State: {answer=<refined>, iteration++}
+        Critique->>Decision: Updated score & feedback
+    end
+        </div>
+    </div>
+
+    <div class="diagram-container">
+        <h2>Data Structure Evolution</h2>
+        <p class="description">How the LoopState object changes as it passes through each node</p>
+        <div class="mermaid">
+graph LR
+    subgraph "Initial State"
+        S1[question: str<br/>answer: ''<br/>feedback: ''<br/>score: 0<br/>iteration: 0]
+    end
+    
+    subgraph "After answer_node"
+        S2[question: str<br/>answer: <generated><br/>feedback: ''<br/>score: 0<br/>iteration: 1]
+    end
+    
+    subgraph "After critique_node"
+        S3[question: str<br/>answer: <same><br/>feedback: <critique><br/>score: <0-10><br/>iteration: 1]
+    end
+    
+    subgraph "After Loop (if continued)"
+        S4[question: str<br/>answer: <refined><br/>feedback: <critique><br/>score: <0-10><br/>iteration: 2]
+    end
+    
+    S1 -->|answer_node| S2
+    S2 -->|critique_node| S3
+    S3 -->|Loop back| S4
+    S4 -.->|Repeat until<br/>score >= 9 or<br/>iteration >= 4| S3
+    
+    style S1 fill:#E6F3FF
+    style S2 fill:#FFE6E6
+    style S3 fill:#E6FFE6
+    style S4 fill:#FFF6E6
+        </div>
+    </div>
+
+</body>
+</html>
+
