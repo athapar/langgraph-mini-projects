@@ -43,11 +43,11 @@ graph TD
     decision -->|score < 9 AND<br/>iteration < 4| answer
     decision -->|score >= 9 OR<br/>iteration >= 4| END([END])
     
-    style START fill:#90EE90
-    style END fill:#FFB6C1
-    style answer fill:#87CEEB
-    style critique fill:#DDA0DD
-    style decision fill:#FFD700
+    style START fill:#4CAF50
+    style END fill:#F44336
+    style answer fill:#2196F3
+    style critique fill:#9C27B0
+    style decision fill:#FF9800
 ```
 
 ### State Flow Sequence
