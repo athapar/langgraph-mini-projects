@@ -26,7 +26,7 @@ sequenceDiagram
     participant Answer as answer_node
     participant Critique as critique_node
     participant Decision as should_continue
-    participant End
+    participant Finish
     
     Start->>Answer: State: {question, answer="", feedback="", score=0, iteration=0}
     Answer->>Answer: LLM generates initial answer
@@ -35,7 +35,7 @@ sequenceDiagram
     Critique->>Decision: State: {score=<0-10>, feedback=<critique>}
     
     alt score >= 9 OR iteration >= 4
-        Decision->>End: Terminate
+        Decision->>Finish: Terminate
     else Continue loop
         Decision->>Answer: Loop back with feedback
         Answer->>Answer: LLM refines using feedback
